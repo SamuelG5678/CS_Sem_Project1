@@ -7,7 +7,9 @@ public class PlayerScript : MonoBehaviour
     private float horizontalInput;
     private float forwardInput;
 
-    public float speed = 5f;
+    public float walkSpeed = 5f;
+    public float runSpeed = 10f;
+    public float currentSpeed;
     public float jumpForce = 5f;
     public float mouseSensitivity = 1f;
 
@@ -29,8 +31,16 @@ public class PlayerScript : MonoBehaviour
 
     public void PlayerMove()
     {
-        transform.Translate(Vector3.right * speed * Time.deltaTime * horizontalInput);
-        transform.Translate(Vector3.forward * speed * Time.deltaTime * forwardInput);
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            currentSpeed = runSpeed;
+        } else
+        {
+            currentSpeed = walkSpeed;
+        }
+
+        transform.Translate(Vector3.right * currentSpeed * Time.deltaTime * horizontalInput);
+        transform.Translate(Vector3.forward * currentSpeed * Time.deltaTime * forwardInput);
     }
 
     public void Jump()
