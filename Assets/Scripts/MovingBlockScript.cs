@@ -22,7 +22,7 @@ public class MovingBlockScript : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
-        Debug.Log("moving box collided");
+        //Debug.Log("moving box collided");
         if (other.gameObject.CompareTag("dir_Switch"))
         {
             speed = -1 * speed;

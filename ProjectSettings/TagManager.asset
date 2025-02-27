@@ -5,6 +5,11 @@ TagManager:
   serializedVersion: 3
   tags:
   - dir_Switch
+  - WinZone
+  - DeathZone
+  - Pickup
+  - Wall
+  - Ground
   layers:
   - Default
   - TransparentFX
