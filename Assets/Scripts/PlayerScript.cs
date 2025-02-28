@@ -35,6 +35,7 @@ public class PlayerScript : MonoBehaviour
     {
         horizontalInput = Input.GetAxis("Horizontal");
         forwardInput = Input.GetAxis("Vertical");
+
         if (PlayerRotScript.instance.isInMenu == false)
         {
             PlayerMove();
