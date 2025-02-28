@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerScript : MonoBehaviour
 {
     private Rigidbody rb;
+    public static PlayerScript instance;
 
     private float horizontalInput;
     private float forwardInput;
@@ -20,6 +21,7 @@ public class PlayerScript : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        instance = this;
         rb = GetComponent<Rigidbody>();
         jumpsRemaining = maxJumps;
     }
@@ -30,8 +32,11 @@ public class PlayerScript : MonoBehaviour
         horizontalInput = Input.GetAxis("Horizontal");
         forwardInput = Input.GetAxis("Vertical");
 
-        PlayerMove();
-        Jump();
+        if (PlayerRotScript.instance.isInMenu == false)
+        {
+            PlayerMove();
+            Jump();
+        }
     }
 
     public void PlayerMove()
@@ -54,18 +59,17 @@ public class PlayerScript : MonoBehaviour
         {
             jumpsRemaining--;
             rb.AddForce(0, jumpForce, 0, ForceMode.Impulse);
+            AudioManagerScript.instance.PlaySFX(AudioManagerScript.instance.jump);
         }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
+        AudioManagerScript.instance.PlaySFX(AudioManagerScript.instance.collide);
         if (collision.gameObject.CompareTag("Ground"))
         {
             jumpsRemaining = maxJumps;
-        } else if (collision.gameObject.CompareTag("Wall"))
-        {
-
-        }
+        } 
     }
 
     private void OnTriggerEnter(Collider other)
@@ -81,6 +85,22 @@ public class PlayerScript : MonoBehaviour
         else if (other.gameObject.CompareTag("Pickup"))
         {
             //put pickup into inventory, destroy pickup
+            AudioManagerScript.instance.PlaySFX(AudioManagerScript.instance.pickupitem);
         }
+    }
+
+    public void FreezePlayer()
+    {
+        rb.constraints = RigidbodyConstraints.FreezePosition;
+        PlayerRotScript.instance.isInMenu = true;
+        CameraRotScript.instance.isInMenu = true;
+    }
+
+    public void UnfreezePlayer()
+    {
+        rb.constraints = RigidbodyConstraints.None;
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
+        PlayerRotScript.instance.isInMenu = false;
+        CameraRotScript.instance.isInMenu = false;
     }
 }

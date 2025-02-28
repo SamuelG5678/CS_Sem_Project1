@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 public class GameManagerScript : MonoBehaviour
 {
@@ -15,13 +17,15 @@ public class GameManagerScript : MonoBehaviour
     public GameObject winCanvas;
 
     [Header("Player Stuff")]
-    public GameObject spawnPoint;
     public GameObject player;
 
     [Header("Levels")]
     public List<GameObject> levels;
     public List<GameObject> spawnPoints;
+    public TMP_Dropdown levelDropdown;
     public int currentLevel;
+    public string currentLevelName;
+    public GameObject currentSpawnPoint;
 
     [Header("Misc")]
     public bool timerIsRunning = false;
@@ -32,6 +36,12 @@ public class GameManagerScript : MonoBehaviour
     {
         instance = this;
         currentLevel = 0;
+        menuCanvas.SetActive(true);
+        for (int i = 0; i < levels.Count; i++)
+        {
+            levels[i].gameObject.SetActive(false);
+        }
+        PlayerScript.instance.FreezePlayer();
     }
 
     private void FixedUpdate()
@@ -54,11 +64,24 @@ public class GameManagerScript : MonoBehaviour
 
     public void StartLevel()
     {
+        levels[currentLevel].SetActive(true);
+        currentSpawnPoint = spawnPoints[currentLevel];
+        player.SetActive(true);
+        player.transform.position = currentSpawnPoint.transform.position;
+
+        AudioManagerScript.instance.PlaySFX(AudioManagerScript.instance.spawn);
         runTime = 0f;
         timerIsRunning = true;
+        PlayerScript.instance.UnfreezePlayer();
+    }
 
-        spawnPoint = spawnPoints[currentLevel];
-        player.transform.position = spawnPoint.transform.position;
+    public void ClearLevel()
+    {
+        for (int i = 0; i < levels.Count; i++)
+        {
+            levels[i].gameObject.SetActive(false);
+        }
+        levels[currentLevel].SetActive(true);
     }
 
     public void StartGame()
@@ -71,29 +94,44 @@ public class GameManagerScript : MonoBehaviour
     public void RestartLevel()
     {
         deathscreenCanvas.SetActive(false);
+        winCanvas.SetActive(false);
         UICanvas.SetActive(true);
+        ClearLevel();
         StartLevel();
     }
 
     public void ReturnToMenu()
     {
+        ClearLevel();
         timerIsRunning = false;
         deathscreenCanvas.SetActive(false);
+        winCanvas.SetActive(false);
         menuCanvas.SetActive(true);
+
+        PlayerScript.instance.FreezePlayer();
     }
 
     public void PlayerDeath()
     {
+        AudioManagerScript.instance.PlaySFX(AudioManagerScript.instance.die);
         timerIsRunning = false;
         UICanvas.SetActive(false);
         deathscreenCanvas.SetActive(true);
+        PlayerScript.instance.FreezePlayer();
     }
 
     public void WinLevel()
     {
         //set win time for level
+        AudioManagerScript.instance.PlaySFX(AudioManagerScript.instance.winlevel);
         timerIsRunning = false;
         UICanvas.SetActive(false);
         winCanvas.SetActive(true);
+        PlayerScript.instance.FreezePlayer();
+    }
+
+    public void SetLevel()
+    {
+        currentLevel = levelDropdown.value;
     }
 }
