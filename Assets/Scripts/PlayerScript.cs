@@ -2,21 +2,25 @@ using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
 {
+    [Header("Objects")]
     private Rigidbody rb;
     public static PlayerScript instance;
+    public GameManagerScript gameManager;
 
+    [Header("Movement")]
     private float horizontalInput;
     private float forwardInput;
-    public float currentSpeed;
-
+    private float currentSpeed;
     public float walkSpeed = 5f;
     public float runSpeed = 10f;
     public float jumpForce = 5f;
     public float mouseSensitivity = 1f;
     public int maxJumps = 1;
-    public int jumpsRemaining;
+    private int jumpsRemaining;
 
-    public GameManagerScript gameManager;
+    [Header("Inventory")]
+    public int bluePickups = 0;
+    public int redPickups = 0;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -84,8 +88,17 @@ public class PlayerScript : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("Pickup"))
         {
-            //put pickup into inventory, destroy pickup
             AudioManagerScript.instance.PlaySFX(AudioManagerScript.instance.pickupitem);
+            
+            if(other.gameObject.name == "PickupBlue")
+            {
+                bluePickups++;
+            } else if(other.gameObject.name == "PickupRed")
+            {
+                redPickups++;
+            }
+
+            Destroy(other.gameObject);
         }
     }
 
