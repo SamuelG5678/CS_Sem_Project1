@@ -21,11 +21,10 @@ public class GameManagerScript : MonoBehaviour
 
     [Header("Levels")]
     public List<GameObject> levels;
-    public List<GameObject> spawnPoints;
     public TMP_Dropdown levelDropdown;
+    public GameObject currentSpawnPoint;
     public int currentLevel;
     public string currentLevelName;
-    public GameObject currentSpawnPoint;
 
     [Header("Misc")]
     public bool timerIsRunning = false;
@@ -37,10 +36,6 @@ public class GameManagerScript : MonoBehaviour
         instance = this;
         currentLevel = 0;
         menuCanvas.SetActive(true);
-        for (int i = 0; i < levels.Count; i++)
-        {
-            levels[i].gameObject.SetActive(false);
-        }
         PlayerScript.instance.FreezePlayer();
     }
 
@@ -64,9 +59,9 @@ public class GameManagerScript : MonoBehaviour
 
     public void StartLevel()
     {
-        levels[currentLevel].SetActive(true);
-        currentSpawnPoint = spawnPoints[currentLevel];
-        player.SetActive(true);
+        Instantiate(levels[currentLevel]);
+        currentSpawnPoint = levels[currentLevel].GetComponent<LevelScript>().spawnPoint;
+        currentLevelName = levels[currentLevel].name;
         player.transform.position = currentSpawnPoint.transform.position;
 
         AudioManagerScript.instance.PlaySFX(AudioManagerScript.instance.spawn);
@@ -77,11 +72,8 @@ public class GameManagerScript : MonoBehaviour
 
     public void ClearLevel()
     {
-        for (int i = 0; i < levels.Count; i++)
-        {
-            levels[i].gameObject.SetActive(false);
-        }
-        levels[currentLevel].SetActive(true);
+        LevelScript currentLevelInstance = Object.FindFirstObjectByType<LevelScript>();
+        Destroy(currentLevelInstance);
     }
 
     public void StartGame()

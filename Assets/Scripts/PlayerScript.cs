@@ -90,12 +90,14 @@ public class PlayerScript : MonoBehaviour
         {
             AudioManagerScript.instance.PlaySFX(AudioManagerScript.instance.pickupitem);
             
-            if(other.gameObject.name == "PickupBlue")
+            if(other.gameObject.name == "PickupBlue" && bluePickups < 3)
             {
                 bluePickups++;
-            } else if(other.gameObject.name == "PickupRed")
+                UIManagerScript.instance.UpdateSliderValue("blue", bluePickups);
+            } else if(other.gameObject.name == "PickupRed" && redPickups < 3)
             {
                 redPickups++;
+                UIManagerScript.instance.UpdateSliderValue("red", redPickups);
             }
 
             Destroy(other.gameObject);

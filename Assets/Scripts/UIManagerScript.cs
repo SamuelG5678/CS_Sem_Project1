@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManagerScript : MonoBehaviour
 {
@@ -9,6 +10,9 @@ public class UIManagerScript : MonoBehaviour
     public GameObject levelname_object;
     private TextMeshProUGUI time_text;
     private TextMeshProUGUI levelname_text;
+
+    public Slider redSlider;
+    public Slider blueSlider;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -35,5 +39,16 @@ public class UIManagerScript : MonoBehaviour
     public void SetLevelNameText(string current_level)
     {
         levelname_text.text = current_level;
+    }
+
+    public void UpdateSliderValue(string pickupColor, int newSliderValue)
+    {
+        if (pickupColor == "red")
+        {
+            redSlider.value = newSliderValue;
+        } else if (pickupColor == "blue")
+        {
+            blueSlider.value = newSliderValue;
+        }
     }
 }
