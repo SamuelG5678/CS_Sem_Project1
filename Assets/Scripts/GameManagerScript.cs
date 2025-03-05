@@ -72,8 +72,9 @@ public class GameManagerScript : MonoBehaviour
 
     public void ClearLevel()
     {
+        Debug.Log("ClearLevel triggered");
         LevelScript currentLevelInstance = Object.FindFirstObjectByType<LevelScript>();
-        Destroy(currentLevelInstance);
+        Destroy(currentLevelInstance.gameObject);
     }
 
     public void StartGame()
