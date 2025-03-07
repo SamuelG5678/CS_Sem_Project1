@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Threading;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
@@ -24,6 +26,7 @@ public class PlayerScript : MonoBehaviour
     private bool isDashing = false;
     private bool isFastfalling = false;
     public float dashTime = 2f;
+    public float timer;
 
     [Header("Inventory")]
     public int bluePickups = 0;
@@ -35,6 +38,8 @@ public class PlayerScript : MonoBehaviour
         instance = this;
         rb = GetComponent<Rigidbody>();
         jumpsRemaining = maxJumps;
+
+        timer = dashTime + 2;
     }
 
     // Update is called once per frame
@@ -43,10 +48,13 @@ public class PlayerScript : MonoBehaviour
         horizontalInput = Input.GetAxis("Horizontal");
         forwardInput = Input.GetAxis("Vertical");
 
-        if (PlayerRotScript.instance.isInMenu == false && isDashing == false && isFastfalling == false)
+        if (PlayerRotScript.instance.isInMenu == false)
         {
-            PlayerMove();
-            Jump();
+            if (isDashing == false && isFastfalling == false)
+            {
+                PlayerMove();
+                Jump();
+            }
             ForwardDash();
         }
     }
@@ -127,36 +135,31 @@ public class PlayerScript : MonoBehaviour
         CameraRotScript.instance.isInMenu = false;
     }
 
-    IEnumerator DashCoroutine()
-    {
-        Debug.Log("Dash initiated.");
-        Debug.Log(Time.time);
-        isDashing = true;
-        rb.useGravity = false;
-        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
-
-        var movementRelativeToCamera = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")) * dashSpeed;
-        var cameraLookingDirection = cam.transform.rotation * Vector3.forward;
-        cameraLookingDirection = new Vector3(cameraLookingDirection.x, 0f, cameraLookingDirection.z).normalized;
-        var absoluteMovement = Quaternion.FromToRotation(Vector3.forward, cameraLookingDirection) * movementRelativeToCamera;
-
-        transform.Translate(absoluteMovement * dashSpeed * Time.deltaTime);
-        yield return new WaitForSeconds(dashTime);
-        Debug.Log(Time.time);
-
-        rb.useGravity = true;
-        isDashing = false;
-        Debug.Log("Dash ended.");
-    }
-
     public void ForwardDash()
     {
         if (Input.GetKeyDown(KeyCode.Mouse0) && bluePickups > 0)
         {
             bluePickups--;
             UIManagerScript.instance.UpdateSliderValue("blue", bluePickups);
-            Debug.Log("triggered dash function");
-            StartCoroutine("DashCoroutine");
+            Debug.Log("triggered dash");
+            AudioManagerScript.instance.PlaySFX(AudioManagerScript.instance.useitem);
+
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+            var movementRelativeToCamera = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")) * dashSpeed;
+            var cameraLookingDirection = cam.transform.rotation * Vector3.forward;
+            cameraLookingDirection = new Vector3(cameraLookingDirection.x, 0f, cameraLookingDirection.z).normalized;
+            var absoluteMovement = Quaternion.FromToRotation(Vector3.forward, cameraLookingDirection) * movementRelativeToCamera;
+            rb.AddForce(absoluteMovement * dashSpeed);
+
+            timer = 0;
         }
+
+        timer += Time.deltaTime;
+
+        if (timer == dashTime)
+        {
+            rb.linearVelocity *= 0;
+        }
+
     }
 }
