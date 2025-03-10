@@ -1,13 +1,7 @@
 using UnityEngine;
 
-public class LevelScript : MonoBehaviour
-{
-    public GameObject spawnPoint;
-    public static LevelScript instance;
+public class LevelScript : MonoBehaviour {
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        instance = this;
-    }
+    public GameObject spawnPoint;
+    public string levelName;
 }

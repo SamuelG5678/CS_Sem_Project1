@@ -52,6 +52,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnPoint: {fileID: 5108768439174917599}
+  levelName: Level 1
 --- !u!1 &5108768439174917599
 GameObject:
   m_ObjectHideFlags: 0

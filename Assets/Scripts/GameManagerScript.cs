@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using TMPro;
+using TMPro.EditorUtilities;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -15,20 +16,25 @@ public class GameManagerScript : MonoBehaviour
     public GameObject deathscreenCanvas;
     public GameObject UICanvas;
     public GameObject winCanvas;
+    public GameObject highscoreCanvas;
 
     [Header("Player Stuff")]
     public GameObject player;
+    public string playerName;
 
     [Header("Levels")]
     public List<GameObject> levels;
+    public TextMeshProUGUI levelNameUIComp;
     public TMP_Dropdown levelDropdown;
     public GameObject currentSpawnPoint;
     public int currentLevel;
     public string currentLevelName;
+    string runTimeText;
 
     [Header("Misc")]
     public bool timerIsRunning = false;
     public float runTime = 0;
+    public TMP_InputField playerNameInput;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -37,6 +43,7 @@ public class GameManagerScript : MonoBehaviour
         currentLevel = 0;
         menuCanvas.SetActive(true);
         PlayerScript.instance.FreezePlayer();
+        AudioManagerScript.instance.PlayMusic(AudioManagerScript.instance.menuMusic);
     }
 
     private void FixedUpdate()
@@ -46,14 +53,12 @@ public class GameManagerScript : MonoBehaviour
 
     public void RunTimer()
     {
-        string runTimeText = "0";
         if (timerIsRunning)
         {
             runTime += Time.deltaTime;
             int timerIntLength = Mathf.Round(runTime).ToString().Length;
             runTimeText = runTime.ToString().Substring(0, (3 + timerIntLength));
         }
-        //Debug.Log(runTimeText);
         UIManagerScript.instance.SetTimerText(runTimeText);
     }
 
@@ -61,9 +66,11 @@ public class GameManagerScript : MonoBehaviour
     {
         Instantiate(levels[currentLevel]);
         currentSpawnPoint = levels[currentLevel].GetComponent<LevelScript>().spawnPoint;
-        currentLevelName = levels[currentLevel].name;
+        currentLevelName = levels[currentLevel].GetComponent<LevelScript>().levelName;
+        levelNameUIComp.text = currentLevelName;
         player.transform.position = currentSpawnPoint.transform.position;
 
+        AudioManagerScript.instance.PlayMusic(AudioManagerScript.instance.levelMusic);
         AudioManagerScript.instance.PlaySFX(AudioManagerScript.instance.spawn);
         runTime = 0f;
         timerIsRunning = true;
@@ -79,6 +86,7 @@ public class GameManagerScript : MonoBehaviour
 
     public void StartGame()
     {
+        highscoreCanvas.SetActive(false);
         menuCanvas.SetActive(false);
         UICanvas.SetActive(true);
         StartLevel();
@@ -86,6 +94,7 @@ public class GameManagerScript : MonoBehaviour
 
     public void RestartLevel()
     {
+        highscoreCanvas.SetActive(false);
         deathscreenCanvas.SetActive(false);
         winCanvas.SetActive(false);
         UICanvas.SetActive(true);
@@ -100,8 +109,10 @@ public class GameManagerScript : MonoBehaviour
         deathscreenCanvas.SetActive(false);
         winCanvas.SetActive(false);
         menuCanvas.SetActive(true);
+        highscoreCanvas.SetActive(true);
 
         PlayerScript.instance.FreezePlayer();
+        AudioManagerScript.instance.PlayMusic(AudioManagerScript.instance.menuMusic);
     }
 
     public void PlayerDeath()
@@ -110,6 +121,7 @@ public class GameManagerScript : MonoBehaviour
         timerIsRunning = false;
         UICanvas.SetActive(false);
         deathscreenCanvas.SetActive(true);
+        highscoreCanvas.SetActive(true);
         PlayerScript.instance.FreezePlayer();
     }
 
@@ -117,6 +129,11 @@ public class GameManagerScript : MonoBehaviour
     {
         //set win time for level
         AudioManagerScript.instance.PlaySFX(AudioManagerScript.instance.winlevel);
+        highscoreCanvas.SetActive(true);
+
+        HighScoreScript.instance.AddNewScore(playerName, runTime);
+        HighScoreScript.instance.UpdateDisplay();
+
         timerIsRunning = false;
         UICanvas.SetActive(false);
         winCanvas.SetActive(true);
@@ -126,5 +143,9 @@ public class GameManagerScript : MonoBehaviour
     public void SetLevel()
     {
         currentLevel = levelDropdown.value;
+    }
+    public void SetPlayerName()
+    {
+        playerName = playerNameInput.text;
     }
 }

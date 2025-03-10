@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class AudioManagerScript : MonoBehaviour
 {
-    private AudioSource source;
+    public AudioSource sfxSource;
+    public AudioSource musicSource;
     public static AudioManagerScript instance;
 
     public AudioClip die;
@@ -18,15 +19,23 @@ public class AudioManagerScript : MonoBehaviour
     public AudioClip useitem;
     public AudioClip winlevel;
 
+    public AudioClip menuMusic;
+    public AudioClip levelMusic;
+
     // Start is called before the first frame update
     void Start()
     {
         instance = this;
-        source = GetComponent<AudioSource>();
     }
 
     public void PlaySFX(AudioClip sound)
     {
-        source.PlayOneShot(sound);
+        sfxSource.PlayOneShot(sound);
+    }
+
+    public void PlayMusic(AudioClip sound)
+    {
+        musicSource.clip = sound;
+        musicSource.Play();
     }
 }
