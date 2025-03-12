@@ -6,16 +6,15 @@ public class HighScoreScript : MonoBehaviour
     public HighScoreDisplayScript[] highScoreDisplayArray;
     public static HighScoreScript instance;
 
-    List<HighScoreEntry> levelOneScores = new List<HighScoreEntry>();
-    List<HighScoreEntry> levelTwoScores = new List<HighScoreEntry>();
-    List<HighScoreEntry> levelThreeScores = new List<HighScoreEntry>();
-    List<HighScoreEntry> levelFourScores = new List<HighScoreEntry>();
-    List<HighScoreEntry> levelFiveScores = new List<HighScoreEntry>();
+    public List<HighScoreEntry> levelOneScores = new List<HighScoreEntry>();
+    public List<HighScoreEntry> levelTwoScores = new List<HighScoreEntry>();
+    public List<HighScoreEntry> levelThreeScores = new List<HighScoreEntry>();
+    public List<HighScoreEntry> levelFourScores = new List<HighScoreEntry>();
+    public List<HighScoreEntry> levelFiveScores = new List<HighScoreEntry>();
 
     void Start()
     {
         instance = this;
-        //UpdateDisplay(levelOneScores);
     }
 
     public void UpdateDisplay(List<HighScoreEntry> scores)
@@ -35,7 +34,7 @@ public class HighScoreScript : MonoBehaviour
         }
     }
 
-    public void AddNewScore(string entryName, float entryScore)
+    public void AddNewScore(List<HighScoreEntry> scores, string entryName, float entryScore)
     {
         scores.Add(new HighScoreEntry { playerName = entryName, time = entryScore });
     }

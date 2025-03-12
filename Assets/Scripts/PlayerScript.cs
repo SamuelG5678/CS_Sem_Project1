@@ -56,6 +56,7 @@ public class PlayerScript : MonoBehaviour
                 Jump();
             }
             ForwardDash();
+            FastFall();
         }
     }
 
@@ -162,4 +163,19 @@ public class PlayerScript : MonoBehaviour
         }
 
     }
+
+    public void FastFall()
+    {
+        if (Input.GetKeyDown(KeyCode.Mouse1) && redPickups > 0)
+        {
+            redPickups--;
+            UIManagerScript.instance.UpdateSliderValue("red", redPickups);
+            Debug.Log("triggered fastfall");
+            AudioManagerScript.instance.PlaySFX(AudioManagerScript.instance.useitem);
+
+            rb.linearVelocity = new Vector3(0, 0, 0);
+            rb.AddForce(Vector3.down * dashSpeed);
+        }
+    }
+
 }
