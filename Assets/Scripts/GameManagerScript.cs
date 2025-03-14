@@ -29,7 +29,7 @@ public class GameManagerScript : MonoBehaviour
     public GameObject currentSpawnPoint;
     public int currentLevel;
     public string currentLevelName;
-    string runTimeText;
+    string runTimeText = "0";
 
     [Header("Misc")]
     public bool timerIsRunning = false;
@@ -44,6 +44,10 @@ public class GameManagerScript : MonoBehaviour
         menuCanvas.SetActive(true);
         PlayerScript.instance.FreezePlayer();
         AudioManagerScript.instance.PlayMusic(AudioManagerScript.instance.menuMusic);
+
+        HighScoreScript.instance.AddNewScore(HighScoreScript.instance.levelOneScores, playerName, runTime);
+        HighScoreScript.instance.AddNewScore(HighScoreScript.instance.levelTwoScores, playerName, runTime);
+        HighScoreScript.instance.AddNewScore(HighScoreScript.instance.levelThreeScores, playerName, runTime);
     }
 
     private void FixedUpdate()
@@ -151,28 +155,15 @@ public class GameManagerScript : MonoBehaviour
     {
         if (currentLevel == 0)
         {
-            HighScoreScript.instance.AddNewScore(HighScoreScript.instance.levelOneScores, playerName, runTime);
             HighScoreScript.instance.UpdateDisplay(HighScoreScript.instance.levelOneScores);
         }
         else if (currentLevel == 1)
         {
-            HighScoreScript.instance.AddNewScore(HighScoreScript.instance.levelTwoScores, playerName, runTime);
             HighScoreScript.instance.UpdateDisplay(HighScoreScript.instance.levelTwoScores);
         }
         else if (currentLevel == 2)
         {
-            HighScoreScript.instance.AddNewScore(HighScoreScript.instance.levelThreeScores, playerName, runTime);
             HighScoreScript.instance.UpdateDisplay(HighScoreScript.instance.levelThreeScores);
-        }
-        else if (currentLevel == 3)
-        {
-            HighScoreScript.instance.AddNewScore(HighScoreScript.instance.levelFourScores, playerName, runTime);
-            HighScoreScript.instance.UpdateDisplay(HighScoreScript.instance.levelFourScores);
-        }
-        else if (currentLevel == 4)
-        {
-            HighScoreScript.instance.AddNewScore(HighScoreScript.instance.levelFiveScores, playerName, runTime);
-            HighScoreScript.instance.UpdateDisplay(HighScoreScript.instance.levelFiveScores);
         }
         else
         {
