@@ -2,6 +2,14 @@ using UnityEngine;
 
 public class CameraRotScript : MonoBehaviour
 {
+    public bool isInMenu = true;
+    public static CameraRotScript instance;
+
+    private void Start()
+    {
+        instance = this;
+    }
+
     public float Sensitivity
 
     {
@@ -17,10 +25,13 @@ public class CameraRotScript : MonoBehaviour
 
     void Update()
     {
-        rotation.y += Input.GetAxis(yAxis) * sensitivity;
-        rotation.y = Mathf.Clamp(rotation.y, -yRotationLimit, yRotationLimit);
-        var yQuat = Quaternion.AngleAxis(rotation.y, Vector3.left);
+        if (isInMenu == false)
+        {
+            rotation.y += Input.GetAxis(yAxis) * sensitivity;
+            rotation.y = Mathf.Clamp(rotation.y, -yRotationLimit, yRotationLimit);
+            var yQuat = Quaternion.AngleAxis(rotation.y, Vector3.left);
 
-        transform.localRotation = yQuat; //Quaternions seem to rotate more consistently than EulerAngles. Sensitivity seemed to change slightly at certain degrees using Euler. transform.localEulerAngles = new Vector3(-rotation.y, rotation.x, 0);
+            transform.localRotation = yQuat; //Quaternions seem to rotate more consistently than EulerAngles. Sensitivity seemed to change slightly at certain degrees using Euler. transform.localEulerAngles = new Vector3(-rotation.y, rotation.x, 0);
+        }
     }
 }
