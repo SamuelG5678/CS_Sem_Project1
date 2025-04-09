@@ -9,8 +9,6 @@ public class HighScoreScript : MonoBehaviour
     public List<HighScoreEntry> levelOneScores = new List<HighScoreEntry>();
     public List<HighScoreEntry> levelTwoScores = new List<HighScoreEntry>();
     public List<HighScoreEntry> levelThreeScores = new List<HighScoreEntry>();
-    public List<HighScoreEntry> levelFourScores = new List<HighScoreEntry>();
-    public List<HighScoreEntry> levelFiveScores = new List<HighScoreEntry>();
 
     void Start()
     {

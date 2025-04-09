@@ -10,6 +10,7 @@ using UnityEngine.UI;
 public class GameManagerScript : MonoBehaviour
 {
     public static GameManagerScript instance;
+    public HighScoreScript highscoreScript;
 
     [Header("Canvases")]
     public GameObject menuCanvas;
@@ -20,7 +21,7 @@ public class GameManagerScript : MonoBehaviour
 
     [Header("Player Stuff")]
     public GameObject player;
-    public string playerName;
+    public string playerName = "Player 1";
 
     [Header("Levels")]
     public List<GameObject> levels;
@@ -40,14 +41,13 @@ public class GameManagerScript : MonoBehaviour
     void Start()
     {
         instance = this;
+        highscoreScript = GetComponent<HighScoreScript>();
         currentLevel = 0;
         menuCanvas.SetActive(true);
         PlayerScript.instance.FreezePlayer();
         AudioManagerScript.instance.PlayMusic(AudioManagerScript.instance.menuMusic);
 
-        HighScoreScript.instance.AddNewScore(HighScoreScript.instance.levelOneScores, playerName, runTime);
-        HighScoreScript.instance.AddNewScore(HighScoreScript.instance.levelTwoScores, playerName, runTime);
-        HighScoreScript.instance.AddNewScore(HighScoreScript.instance.levelThreeScores, playerName, runTime);
+        //UpdateDisplayWithCurrentLevel();
     }
 
     private void FixedUpdate()
@@ -131,12 +131,11 @@ public class GameManagerScript : MonoBehaviour
 
     public void WinLevel()
     {
-        //set win time for level
         AudioManagerScript.instance.PlaySFX(AudioManagerScript.instance.winlevel);
         highscoreCanvas.SetActive(true);
         UpdateDisplayWithCurrentLevel();
 
-            timerIsRunning = false;
+        timerIsRunning = false;
         UICanvas.SetActive(false);
         winCanvas.SetActive(true);
         PlayerScript.instance.FreezePlayer();
@@ -155,19 +154,22 @@ public class GameManagerScript : MonoBehaviour
     {
         if (currentLevel == 0)
         {
-            HighScoreScript.instance.UpdateDisplay(HighScoreScript.instance.levelOneScores);
+            highscoreScript.AddNewScore(highscoreScript.levelOneScores, playerName, runTime);
+            highscoreScript.UpdateDisplay(highscoreScript.levelOneScores);
         }
         else if (currentLevel == 1)
         {
-            HighScoreScript.instance.UpdateDisplay(HighScoreScript.instance.levelTwoScores);
+            highscoreScript.AddNewScore(highscoreScript.levelTwoScores, playerName, runTime);
+            highscoreScript.UpdateDisplay(highscoreScript.levelTwoScores);
         }
         else if (currentLevel == 2)
         {
-            HighScoreScript.instance.UpdateDisplay(HighScoreScript.instance.levelThreeScores);
+            highscoreScript.AddNewScore(highscoreScript.levelThreeScores, playerName, runTime);
+            highscoreScript.UpdateDisplay(highscoreScript.levelThreeScores);
         }
         else
         {
-            Debug.Log("current level isn't 0-4 somehow");
+            Debug.Log("current level isn't 0-2 somehow");
         }
     }
 }
